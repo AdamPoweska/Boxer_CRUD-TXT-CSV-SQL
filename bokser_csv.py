@@ -1,4 +1,4 @@
-# CRUD - list of boxers -> saveing to csv
+# CRUD - list of boxers -> saving to csv
 
 import csv
 import sys
