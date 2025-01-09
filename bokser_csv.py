@@ -3,7 +3,7 @@
 import csv
 import sys
 
-FILE_PATH = r'C:\Users\\Projects\Bokser\\'
+FILE_PATH = r'C:\Users\Projects\Bokser\\'
 FILE_NAME = 'bokser_data_csv.csv'
 FULL_FILE_PATH = FILE_PATH + FILE_NAME
 
