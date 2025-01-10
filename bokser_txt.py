@@ -16,10 +16,10 @@ class Boxer:
         self.style = style
         self.ranking = ranking
 
-        self.ATTRS_ORDER = [key for key in self.__dict__] # pobiera klucze dla self i zwraca je w formie listy - do napisania nagłówków w pliku
+        self.ATTRS_ORDER = [key for key in self.__dict__] # Self key's returned as list
     
     def __str__(self):
-        values = ",".join(str(getattr(self, attr)) for attr in self.ATTRS_ORDER) # getattr "wyciąga" wartości dla self a następnie szereguje je w kolejności takiej jak w self.ATTRS_ORDER - czyli tak jak wpisaliśmy oryginalnie w klasę
+        values = ",".join(str(getattr(self, attr)) for attr in self.ATTRS_ORDER) # Getattr pulls self values and sets it in order as in self.ATTRS_ORDER
         return f"{values}"
     
     def __repr__(self):
@@ -49,7 +49,7 @@ class Boxer:
             name_check = line.split(',')[0]
             if name_check.lower() == name.lower():
                 print("There is already boxer with such name. Please check or add a number to a name.")
-                return # w funkcji, gdzie występuje return bez żadnej wartości (jak w tym przykładzie), jest to jednoznaczne z return None. Zakończenie funkcji w ten sposób przerywa jej działanie natychmiast.
+                return # in function where return is without any value it returns None. In this way you end a function.
 
         age = get_input("\nAge: ", validate_age, "Are you sure it is correct age?")
         height = get_input("\nHeight(cm): ", validate_height, "Are you sure it is correct height(cm)?")
@@ -129,7 +129,7 @@ class Boxer:
         file_lines = self.read_file_list()
 
         if file_lines == []:
-            names = ",".join(attr for attr in self.ATTRS_ORDER) # łączy (join) listę każdy jej element przedzielając "|" i centrując na "max_width"
+            names = ",".join(attr for attr in self.ATTRS_ORDER) # joins elements in the list with "|" as and centrs it on "max_width"
             names_str = str(names) + '\n'
             self.append_to_file(names_str)
         else:
@@ -229,24 +229,23 @@ def show_menu():
 
 
 def main():
-    boxer_manager = Boxer() # MUSZĘ STWORZYĆ ZMIENNĄ KTÓRA JEST INSTANCJĄ KLASY BY MÓC NA NIEJ OPEROWAĆ - NIE MOGĘ ODWOŁAĆ SIĘ BEZPOŚREDNIO DO KLASY. KLASA MUSI MIEĆ WARTOŚCI DOMYŚLNE ABY NIE POJAWIŁ SIĘ NA TYM ETAPIE BŁĄD WYWOŁANIA KLASY. PRZYPISANIE WARTOŚCI DOMYŚLNYCH JAKO "NONE" MOŻE POWODOWAĆ PROBLEMY I NIE JEST REKOMENDOWANE.
-
+    boxer_manager = Boxer() # variable - class instance
     boxer_manager.boxer_list_headings()
     
     menu_actions = {
-        '1': boxer_manager.add_boxer, # nie ma tu nawiasów gdyż gdyby były to od razu na tym etapie wywoływalibyśmy funkcję "add_crew_member" - my natomiast chcemy jedynie PRZECHOWAĆ ODWOŁANIE DO FUNKCJI A NIE JĄ WYWOŁAĆ
-        '2': lambda: boxer_manager.remove_boxer(input("Which boxer do you wish to remove from the database? Type name: ")), # w przypadku gdy mamy lambdę - zwraca ona wartość (wbudowana funkcja return) i nic nie wywołuje
+        '1': boxer_manager.add_boxer, # # No () - as we do not want to call function but only to save a call to function for future use.
+        '2': lambda: boxer_manager.remove_boxer(input("Which boxer do you wish to remove from the database? Type name: ")), # Lambda has built in return function.
         '3': lambda: print(boxer_manager.read_file_str()),
         '4': lambda: boxer_manager.update_boxer(input("Which boxer do you wish to update? Type name: ")),
-        '5': lambda: print("\nGoodbye!") or sys.exit(0), # "or" w pythonie zwraca wartość pierwszego wyrażenia, które ocenia się jako True. Pierwszy jest print(), który zwraca None - a None jest traktowany jako False. Dlatego wykonywane jest drugie wyrażenie: sys.exit. Gdybyśmy użyli "and" python oczekiwałby, że oba wyrażenia muszą być True żeby wykonać sys.exit(0).
+        '5': lambda: print("\nGoodbye!") or sys.exit(0), # "or" in python, returns the value of the first expression that is True. First is print(), which returns None - and None is treated as False. Becaouse of this second second part is executed: sys.exit. If we would used "and", python would expect that both parts of expression must be True to execute sys.exit(0) - and it finally won't be excecuted.
     }
 
     while True:
-        question = show_menu() # zwraca 1-5
-        action = menu_actions.get(question) # ".get" pobiera wartość dla danego klucza (z danego słownika)
+        question = show_menu() # returns 1-5
+        action = menu_actions.get(question) # ".get" takes value of given key (from selected dictionary)
 
         if action:
-            action() # tutaj używamy już nawiasów, więc funkcja jest wywoływana dopiero na tym etapie
+            action() # () - function is called at this stage
         else:
             print('1, 2, 3, 4 or 5 answers!')
 
