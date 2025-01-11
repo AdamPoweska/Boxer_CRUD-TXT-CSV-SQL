@@ -1,5 +1,4 @@
-# CRUD - lista bokserów -> zapisywanie do sql
-# napisz jedną funkcję, która zmienia dane do nowego boksera i do updatu starego - DRY
+# CRUD - list of boxers -> saving to sql
 
 import sqlite3
 import sys
@@ -8,8 +7,8 @@ import os
 from bokser_functions import get_input, validate_name, get_data_from_user
 
 FULL_FILE_PATH = 'bokser_data_sql.db'
-CONNECTION_TO_DB = sqlite3.connect(FULL_FILE_PATH) # łączy do bazy danych i tworzy ją jeśli plik jeszcze nie istnieje
-COURSOR_SQL = CONNECTION_TO_DB.cursor() # musimy ustawić zmienną która pozwoli nam na zmiany w badzie danych do której jesteśmy połączeni
+CONNECTION_TO_DB = sqlite3.connect(FULL_FILE_PATH) # connect with database and creates it, if it yet doesn't exist
+COURSOR_SQL = CONNECTION_TO_DB.cursor() # variable that will allow us to make changes in database
 
 class Boxer:
     def __init__(self, name="", age=0, height = 0, weight="", weight_class="", style="", ranking=0, wins=0, losses=0, draws=0, no_contest=0):
@@ -25,9 +24,10 @@ class Boxer:
         self.draws = draws
         self.no_contest = no_contest
 
-        self.ATTRS_ORDER = [key for key in self.__dict__] # pobiera klucze dla self i zwraca je w formie listy - do napisania nagłówków w pliku
+        self.ATTRS_ORDER = [key for key in self.__dict__] # self key's returned as list
         
-        self.ATTRS_TYPES = { # słownik służy do dynamicznego wpisywania nagłówków przy pierwszym uruchomieniu programu, w przypadku zmian w klasie należy też dokonać zmian w słowniku
+        # dictionary is used for dynamic entry of headings at first run of program, if there are changes in class, then also changes in dictionary are needed
+        self.ATTRS_TYPES = {
             "name": "text",
             "age": "integer",
             "height": "real",
@@ -39,10 +39,10 @@ class Boxer:
             "losses": "integer",
             "draws": "integer",
             "no_contest": "integer"
-        }
+        } 
 
     def __str__(self):
-        values = [getattr(Boxer, attr) for attr in self.ATTRS_ORDER] # getattr "wyciąga" wartości dla self a następnie szereguje je w kolejności takiej jak w self.ATTRS_ORDER - czyli tak jak wpisaliśmy oryginalnie w klasę
+        values = [getattr(Boxer, attr) for attr in self.ATTRS_ORDER] # Getattr pulls self values and sets it in order as in self.ATTRS_ORDER
         return f"{values}"
     
     def __repr__(self):
@@ -142,9 +142,9 @@ class Boxer:
 
     def boxer_list_headings(self: list) -> None:
         """Prints headings of Boxer class into database (only at first run of program)."""    
-        if os.path.getsize(FULL_FILE_PATH) < 3: # plik z zapisanymi nagłówkami wazy 8b, czek na pliki poniżej 3b
+        if os.path.getsize(FULL_FILE_PATH) < 3: # file with saved headings =~ 8bites, this check is for files under 3 bites
             boxer_instance = Boxer()
-            headers = ", ".join([f"{col} {data_type}" for col, data_type in boxer_instance.ATTRS_TYPES.items()]) # .join zmiania list comprehension na string, łącząc przy użyciu ", "
+            headers = ", ".join([f"{col} {data_type}" for col, data_type in boxer_instance.ATTRS_TYPES.items()]) # .join changes list into string, using commas: ", "
             create_headers = f"CREATE TABLE boxer_database({headers})"
             COURSOR_SQL.execute(create_headers)
             # Hardcoded = # COURSOR_SQL.execute("""CREATE TABLE boxer_database (name text, age integer, height real, weight real, weight_class text, style text, ranking integer, wins integer, losses integer, draws integer, no_contest integer)""")
@@ -165,24 +165,24 @@ def show_menu():
 
 
 def main():
-    boxer_manager = Boxer() # MUSZĘ STWORZYĆ ZMIENNĄ KTÓRA JEST INSTANCJĄ KLASY BY MÓC NA NIEJ OPEROWAĆ - NIE MOGĘ ODWOŁAĆ SIĘ BEZPOŚREDNIO DO KLASY. KLASA MUSI MIEĆ WARTOŚCI DOMYŚLNE ABY NIE POJAWIŁ SIĘ NA TYM ETAPIE BŁĄD WYWOŁANIA KLASY. PRZYPISANIE WARTOŚCI DOMYŚLNYCH JAKO "NONE" MOŻE POWODOWAĆ PROBLEMY I NIE JEST REKOMENDOWANE.
+    boxer_manager = Boxer() # class instance variable
 
     boxer_manager.boxer_list_headings()    
     
     menu_actions = {
-        '1': boxer_manager.add_boxer, # nie ma tu nawiasów gdyż gdyby były to od razu na tym etapie wywoływalibyśmy funkcję "add_crew_member" - my natomiast chcemy jedynie PRZECHOWAĆ ODWOŁANIE DO FUNKCJI A NIE JĄ WYWOŁAĆ
-        '2': lambda: boxer_manager.remove_boxer(input("Which boxer do you wish to remove from the database? Type name: ")), # w przypadku gdy mamy lambdę - zwraca ona wartość (wbudowana funkcja return) i nic nie wywołuje
+        '1': boxer_manager.add_boxer, # No () - as we do not want to call function but only to save a call to function for future use.
+        '2': lambda: boxer_manager.remove_boxer(input("Which boxer do you wish to remove from the database? Type name: ")), # Lambda has built in return function.
         '3': lambda: boxer_manager.print_by_line(boxer_manager.read_file_list()),
         '4': lambda: boxer_manager.update_boxer(input("Which boxer do you wish to update? Type name: ")),
-        '5': lambda: print("\nGoodbye!") or CONNECTION_TO_DB.close() or sys.exit(0), # "or" w pythonie zwraca wartość pierwszego wyrażenia, które ocenia się jako True. Pierwszy jest print(), który zwraca None - a None jest traktowany jako False. Dlatego wykonywane jest drugie wyrażenie: sys.exit. Gdybyśmy użyli "and" python oczekiwałby, że oba wyrażenia muszą być True żeby wykonać sys.exit(0).
+        '5': lambda: print("\nGoodbye!") or CONNECTION_TO_DB.close() or sys.exit(0), # "or" in python, returns the value of the first expression that is True. First is print(), which returns None - and None is treated as False. Becaouse of this second second part is executed: sys.exit. If we would used "and", python would expect that both parts of expression must be True to execute sys.exit(0) - and it finally won't be excecuted.
     }
 
     while True:
-        question = show_menu() # zwraca 1-5
-        action = menu_actions.get(question) # ".get" pobiera wartość dla danego klucza (z danego słownika)
+        question = show_menu() # returns 1-5
+        action = menu_actions.get(question) # ".get" takes value of given key (from selected dictionary)
 
         if action:
-            action() # tutaj używamy już nawiasów, więc funkcja jest wywoływana dopiero na tym etapie
+            action() # () - function is called at this stage
         else:
             print('1, 2, 3, 4 or 5 answers!')
 

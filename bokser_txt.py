@@ -233,7 +233,7 @@ def main():
     boxer_manager.boxer_list_headings()
     
     menu_actions = {
-        '1': boxer_manager.add_boxer, # # No () - as we do not want to call function but only to save a call to function for future use.
+        '1': boxer_manager.add_boxer, # No () - as we do not want to call function but only to save a call to function for future use.
         '2': lambda: boxer_manager.remove_boxer(input("Which boxer do you wish to remove from the database? Type name: ")), # Lambda has built in return function.
         '3': lambda: print(boxer_manager.read_file_str()),
         '4': lambda: boxer_manager.update_boxer(input("Which boxer do you wish to update? Type name: ")),
