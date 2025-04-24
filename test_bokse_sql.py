@@ -82,7 +82,7 @@ class TestBokserFunctions(unittest.TestCase):
 
 class TestBoxer(unittest.TestCase):
 
-    def test_print_by_line(self):
+    def test_print_by_line_correct(self):
         boxer = Boxer()
         
         temporary_file = io.StringIO() # tworzy tymczasowy obiekt rozpoznawany przez pytona jako plik ale istniejący w pamięci
@@ -92,6 +92,18 @@ class TestBoxer(unittest.TestCase):
         output = temporary_file.getvalue() # getvalue zwraca cały zapisany tekst jako jeden string, jest to metoda obiektów .io
 
         self.assertIn("Many Paquiao", output)
+
+    def test_print_by_line_not_correct(self):
+        boxer = Boxer()
+        
+        temporary_file = io.StringIO() 
+        with redirect_stdout(temporary_file): 
+            boxer.print_by_line(boxer.read_file_list())
+        
+        output = temporary_file.getvalue()
+
+        self.assertNotIn("XXX", output)
+
 
 if __name__ == '__main__':
     unittest.main()
