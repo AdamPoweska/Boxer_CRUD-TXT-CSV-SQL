@@ -1,1 +1,1 @@
-CRUD exercise - savign files to: TXT, CSV and SQL formats.
+CRUD exercise - saving files to: TXT, CSV and SQL formats.
